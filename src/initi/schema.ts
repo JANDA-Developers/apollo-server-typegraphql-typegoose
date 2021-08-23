@@ -5,9 +5,7 @@ import { GraphQLSchema } from "graphql";
 export const createSchema = async (): Promise<GraphQLSchema> =>
  buildSchema({
   emitSchemaFile: true,
-  resolvers: [
-   __dirname + "/../**/*.{resolver,interface,model,type,enum}.{ts,js}",
-  ],
+  resolvers: [__dirname + "/../**/*.{resolver,model}.{ts,js}"],
   globalMiddlewares: [],
   scalarsMap: [],
  });

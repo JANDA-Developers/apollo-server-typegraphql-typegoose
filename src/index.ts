@@ -1,5 +1,5 @@
 import { mongoose } from "@typegoose/typegoose";
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer, ExpressContext } from "apollo-server-express";
 import env from "dotenv";
 import path from "path";
 import express from "express";
@@ -18,10 +18,16 @@ mongoose
   const server = new ApolloServer({
    schema: await createSchema(),
    introspection: true,
+   context: async (context): Promise<ExpressContext> => {
+    return context;
+   },
   });
-
   const expressApp = express();
   server.applyMiddleware({
    app: expressApp,
+  });
+
+  expressApp.listen(4000, () => {
+   console.log("server is running on 4000");
   });
  });
