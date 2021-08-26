@@ -13,6 +13,7 @@ registerEnumType(UserRole, {
 @InputType("UserInput")
 @ObjectType()
 export class User {
+<<<<<<< HEAD
  @Field()
  @Prop()
  name: string;
@@ -24,7 +25,19 @@ export class User {
  @Field(() => UserRole) // We don't know what is UserRole . from type-graqhl
  @Prop()
  userRole: UserRole;
+=======
+@Field()
+@Prop()
+id: string;
+ 
+@Field()
+@Prop()
+name: string;
+>>>>>>> master
 }
+
+
+
 
 export const UserModel = getModelForClass(User);
 UserModel.createCollection();

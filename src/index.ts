@@ -1,14 +1,18 @@
 import { mongoose } from "@typegoose/typegoose";
 import { ApolloServer, ExpressContext } from "apollo-server-express";
-import env from "dotenv";
-import path from "path";
+import dotenv from "dotenv";
 import express from "express";
 import { createSchema } from "./initi/schema";
-const envPath = path.join(__dirname, `../.env`);
-env.config({ path: envPath });
+import path from 'path'
+const envPath = path.join(__dirname, '../.env')
+dotenv.config({ path:envPath });
+
+if(!process.env.ATLAS_URI) {
+    throw Error("Atlas Uri is not in env file");
+}
 
 mongoose
- .connect(process.env.DB_URI_CLOUD!, {
+ .connect(process.env.ATLAS_URI, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useUnifiedTopology: true,
