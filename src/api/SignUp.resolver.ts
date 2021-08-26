@@ -1,21 +1,8 @@
 import { ExpressContext } from "apollo-server-express";
-import {
- Resolver,
- Mutation,
- Arg,
- Ctx,
- Field,
- InputType,
- ObjectType,
-} from "type-graphql";
+import { Resolver, Mutation, Arg, Ctx, Field, ObjectType } from "type-graphql";
 import { User, UserModel } from "../model/user.model";
+import { merge } from "../utils/merge";
 import { WithMongoSession } from "../utils/MongoSession.decorator";
-
-@InputType()
-class SignUpInput {
- @Field()
- name: string;
-}
 
 @ObjectType()
 class SignUpResponse {
@@ -35,7 +22,7 @@ export class SignUpResolver {
  @Mutation(() => SignUpResponse)
  async SignUp(
   @Ctx() context: ExpressContext,
-  @Arg("input", () => SignUpInput) input: SignUpInput
+  @Arg("input", () => User) input: User
  ): Promise<SignUpResponse> {
   const response = new SignUpResponse();
 
@@ -43,7 +30,8 @@ export class SignUpResolver {
 
   try {
    const useInstance = new UserModel();
-   useInstance.name = input.name;
+   merge(useInstance, input);
+
    await useInstance.save();
    // error ouccred !!!
 
