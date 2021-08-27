@@ -19,6 +19,7 @@ if (!process.env.SESSION_KEY) {
  throw Error("SESSION_KEY is not in env file");
 }
 
+ //   mongoUrl: process.env.ATLAS_URI,
 mongoose
  .connect(process.env.ATLAS_URI, {
   useNewUrlParser: true,
@@ -26,7 +27,7 @@ mongoose
   useUnifiedTopology: true,
   useFindAndModify: false,
  })
- .then(async () => {
+ .then(async (client: any) => {
   const expressApp = express();
 
   expressApp.use(
@@ -36,7 +37,8 @@ mongoose
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({
-     mongoUrl: process.env.ATLAS_URI,
+      mongoUrl: process.env.ATLAS_URI,
+      //  client: client
     }),
     cookie: {
      // Production, local 개발일때 환경 나눠야됨
@@ -56,6 +58,8 @@ mongoose
     },
    })
   );
+
+
   const server = new ApolloServer({
    schema: await createSchema(),
    playground: {},
@@ -80,4 +84,7 @@ mongoose
   expressApp.listen(4000, () => {
    console.log("server is running on 4000");
   });
+ })
+ .catch(err => {
+   console.log('ERROR Mongo: ', err);
  });

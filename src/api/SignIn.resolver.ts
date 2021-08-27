@@ -1,10 +1,12 @@
 import { ExpressContext } from "apollo-server-express";
+import { ClientSession } from "mongoose";
 import { Resolver, Ctx, Query, Arg } from "type-graphql";
 import { User, UserModel } from "../model/user.model";
 
 export interface Context extends ExpressContext {
  context: any;
  req: any;
+ session?: ClientSession;
 }
 
 @Resolver()

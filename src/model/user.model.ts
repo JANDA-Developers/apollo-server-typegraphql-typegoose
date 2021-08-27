@@ -17,6 +17,8 @@ registerEnumType(UserRole, {
 @ObjectType({
  implements: CollectionDataInterface,
 })
+
+
 export class User extends CollectionDataInterface {
  @Field()
  @ValueFilter(["contains", "eq"])
@@ -45,6 +47,10 @@ export class User extends CollectionDataInterface {
  @Prop()
  userRole: UserRole;
 
+ // async saveUsers(test) {
+ //  console.log(test);
+ // }
+
  async hashPassword() {
   this._password = await this.hash(this._password);
  }
@@ -60,3 +66,4 @@ export class User extends CollectionDataInterface {
 
 export const UserModel = getModelForClass(User);
 UserModel.createCollection();
+
