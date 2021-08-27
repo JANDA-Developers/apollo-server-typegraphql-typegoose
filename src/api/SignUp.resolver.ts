@@ -1,20 +1,12 @@
 import { ExpressContext } from "apollo-server-express";
-import { Resolver, Mutation, Arg, Ctx, Field, ObjectType } from "type-graphql";
+import { Resolver, Mutation, Arg, Ctx } from "type-graphql";
+import { GenerateResponse } from "../helper/BaseResponse.type";
 import { User, UserModel } from "../model/user.model";
 import { merge } from "../utils/merge";
 import { WithMongoSession } from "../utils/MongoSession.decorator";
 
-@ObjectType()
-class SignUpResponse {
- @Field(() => Boolean)
- ok: boolean;
-
- @Field({ nullable: true })
- error: string;
-
- @Field(() => User, { nullable: true })
- user?: User;
-}
+const SignUpResponse = GenerateResponse(User, "SignUp");
+type TSignUpResponse = InstanceType<typeof SignUpResponse>;
 
 @Resolver()
 export class SignUpResolver {
@@ -23,7 +15,7 @@ export class SignUpResolver {
  async SignUp(
   @Ctx() context: ExpressContext,
   @Arg("input", () => User) input: User
- ): Promise<SignUpResponse> {
+ ): Promise<TSignUpResponse> {
   const response = new SignUpResponse();
 
   // what is transaction of database ?
@@ -33,10 +25,8 @@ export class SignUpResolver {
    merge(useInstance, input);
 
    await useInstance.save();
-   // error ouccred !!!
-
    response.ok = true;
-   response.user = useInstance;
+   response.data = useInstance;
   } catch (e) {
    response.ok = false;
    response.error = JSON.stringify(e);

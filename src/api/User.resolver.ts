@@ -1,12 +1,13 @@
-import { ExpressContext } from "apollo-server-express";
-import { Resolver, Ctx, Query } from "type-graphql";
-import { User } from "../model/user.model";
-
+import { Resolver, Query, Arg } from "type-graphql";
+import { User, UserModel } from "../model/user.model";
+import { documentNotFound } from "../utils/error";
 
 @Resolver()
-export class SignUpResolver {
+export class UserFindByIdResolver {
  @Query(() => User)
- async User(@Ctx() context: ExpressContext): Promise<any> {
-  return 1;
+ async UserFindById(@Arg("userId") userId: string): Promise<any> {
+  const user = await UserModel.findById(userId);
+  if (!user) throw documentNotFound("user");
+  return user;
  }
 }

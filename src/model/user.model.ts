@@ -2,12 +2,13 @@ import { getModelForClass, Prop } from "@typegoose/typegoose";
 import { Field, InputType, ObjectType, registerEnumType } from "type-graphql";
 import { compare, hash } from "bcryptjs";
 import { CollectionDataInterface } from "./abs/CollectionDataInterface";
+import { ValueFilter } from "../helper/decorators/filter/FilterDecorators";
+import { Sorting } from "../helper/decorators/sort/SortDecorator";
 
 enum UserRole {
  Admin = "Admin",
  Member = "Member",
 }
-
 registerEnumType(UserRole, {
  name: "UserRole",
 });
@@ -18,16 +19,21 @@ registerEnumType(UserRole, {
 })
 export class User extends CollectionDataInterface {
  @Field()
+ @ValueFilter(["contains", "eq"])
+ @Sorting()
  @Prop()
  name: string;
 
  @Field()
+ @ValueFilter(["contains", "eq"])
+ @Sorting()
  @Prop({
   unique: true,
  })
  email: string;
 
  @Field()
+ @ValueFilter(["contains", "eq"])
  @Prop()
  phoneNumber: string;
 
@@ -35,6 +41,7 @@ export class User extends CollectionDataInterface {
  _password: string;
 
  @Field(() => UserRole) // We don't know what is UserRole . from type-graqhl
+ @ValueFilter(["contains", "eq"])
  @Prop()
  userRole: UserRole;
 

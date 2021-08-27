@@ -1,6 +1,5 @@
 import { ExpressContext } from "apollo-server-express";
 import { Resolver, Ctx, Query, Arg } from "type-graphql";
-import { BuildContext } from "type-graphql/dist/schema/build-context";
 import { User, UserModel } from "../model/user.model";
 
 export interface Context extends ExpressContext {

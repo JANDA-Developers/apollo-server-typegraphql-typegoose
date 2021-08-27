@@ -7,13 +7,16 @@ import path from "path";
 import session from "express-session";
 import { TimeUnit } from "./type/const";
 import { UserModel } from "./model/user.model";
-const MongoStore = require("connect-mongo")(session);
+import MongoStore from "connect-mongo";
 
 const envPath = path.join(__dirname, "../.env");
 dotenv.config({ path: envPath });
 
 if (!process.env.ATLAS_URI) {
  throw Error("Atlas Uri is not in env file");
+}
+if (!process.env.SESSION_KEY) {
+ throw Error("SESSION_KEY is not in env file");
 }
 
 mongoose
@@ -24,34 +27,16 @@ mongoose
   useFindAndModify: false,
  })
  .then(async () => {
-  const server = new ApolloServer({
-   schema: await createSchema(),
-   introspection: true,
-   context: async (context): Promise<ExpressContext> => {
-    const session = context.req["session"];
-    const userid = session["userId"];
-    if (userid) {
-     const user = await UserModel.findById(userid);
-     if (user) {
-      context["user"] = user;
-     }
-    }
-    return context;
-   },
-  });
   const expressApp = express();
-  server.applyMiddleware({
-   app: expressApp,
-  });
 
   expressApp.use(
    session({
     name: "jb_qid",
-    secret: process.env.JD_TIMESPACE_SECRET || "",
+    secret: process.env.SESSION_KEY || "",
     resave: false,
     saveUninitialized: false,
     store: new MongoStore({
-     mongooseConnection: mongoose.connection,
+     mongoUrl: process.env.ATLAS_URI,
     }),
     cookie: {
      // Production, local 개발일때 환경 나눠야됨
@@ -71,6 +56,26 @@ mongoose
     },
    })
   );
+  const server = new ApolloServer({
+   schema: await createSchema(),
+   playground: {},
+   introspection: true,
+   context: async (context): Promise<ExpressContext> => {
+    const session = context.req["session"];
+    const userid = session["userId"];
+    if (userid) {
+     const user = await UserModel.findById(userid);
+     if (user) {
+      context["user"] = user;
+     }
+    }
+    return context;
+   },
+  });
+
+  server.applyMiddleware({
+   app: expressApp,
+  });
 
   expressApp.listen(4000, () => {
    console.log("server is running on 4000");
