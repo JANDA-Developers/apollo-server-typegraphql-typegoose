@@ -16,7 +16,7 @@ if (!process.env.ATLAS_URI) {
  throw Error("Atlas Uri is not in env file");
 }
 if (!process.env.SESSION_KEY) {
- throw Error("SESSION_KEY is not in env file");
+ throw Error("SESSION_KEY is not in env file"); 
 }
 
 mongoose
@@ -27,6 +27,7 @@ mongoose
   useFindAndModify: false,
  })
  .then(async (client: any) => {
+
   const expressApp = express();
 
   expressApp.use(

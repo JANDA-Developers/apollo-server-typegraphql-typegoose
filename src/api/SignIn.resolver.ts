@@ -15,7 +15,7 @@ export class SignUpResolver {
  async SignIn(
   @Ctx() context: Context,
   @Arg("email") email: string,
-  @Arg("pssword") password: string
+  @Arg("password") password: string
  ): Promise<any> {
   const user = await UserModel.findOne({
    email,

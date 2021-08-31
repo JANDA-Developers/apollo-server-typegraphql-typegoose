@@ -20,13 +20,13 @@ registerEnumType(UserRole, {
 
 
 export class User extends CollectionDataInterface {
- @Field()
+ @Field(() => String!)
  @ValueFilter(["contains", "eq"])
  @Sorting()
  @Prop()
  name: string;
 
- @Field()
+ @Field(() => String)
  @ValueFilter(["contains", "eq"])
  @Sorting()
  @Prop({
@@ -34,7 +34,7 @@ export class User extends CollectionDataInterface {
  })
  email: string;
 
- @Field()
+ @Field(() => String)
  @ValueFilter(["contains", "eq"])
  @Prop()
  phoneNumber: string;
@@ -64,6 +64,11 @@ export class User extends CollectionDataInterface {
  }
 }
 
-export const UserModel = getModelForClass(User);
-UserModel.createCollection();
-
+export const UserModel = getModelForClass(User, {
+schemaOptions: {
+    collection: "User",
+    timestamps: true
+}
+});
+UserModel.createCollection({
+});

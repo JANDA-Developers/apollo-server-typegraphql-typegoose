@@ -5,8 +5,8 @@
   "author": "SuperWallaby",
   "license": "MIT",
   "dependencies": {
-    "@typegoose/typegoose": "7.4.1",
-    "@types/mongoose": "^5.11.97",
+    "@typegoose/typegoose": "7.4.5",
+    "@types/mongoose": "5.10.2",
     "apollo-server-express": "^2.9.7",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.13.1",
@@ -15,7 +15,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.2",
     "graphql": "^15.5.1",
-    "mongoose": "^5.13.7",
+    "mongoose": "5.11.4",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1"
   },

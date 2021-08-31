@@ -1,7 +1,6 @@
 import {Resolver, Mutation, Arg, Ctx} from "type-graphql";
 import {GenerateResponse} from "../helper/BaseResponse.type";
 import {User, UserModel} from "../model/user.model";
-import {merge} from "../utils/merge";
 import {WithMongoSession} from "../utils/MongoSession.decorator";
 import {Context} from "./SignIn.resolver";
 
@@ -20,30 +19,12 @@ export class SignUpResolver {
         const response = new SignUpResponse();
 
         try {
-            const user = new User();
-            const useInstance = new UserModel(user);
-            console.log({useInstance});
-            merge(useInstance, input);
-            console.log({input})
-            console.log({useInstance})
-
-            // await useInstance.save({
-            //     session: context.session,
-            // });
-
-            await UserModel.create({
-                name: input.name,
-                email: input.email,
-                phoneNumber: input.phoneNumber,
-                userRole: input.userRole
-            })
-                .then(data => {
-                    console.log(data);
-                    console.log('Successfully inserted');
-                })
-                .catch(err => {
-                    console.log('ERROR on Typegoose Create: ', err);
-                });
+            const newUser = new User(input);
+            const useInstance = new UserModel(newUser);
+ 
+            await useInstance.save({
+                session: context.session,
+            });
 
             response.ok = true;
             response.setData(useInstance);
@@ -53,6 +34,9 @@ export class SignUpResolver {
             response.error = JSON.stringify(e);
         }
 
+
+        console.log("response.data");
+        console.log(response.data);
         return response;
     }
 }
