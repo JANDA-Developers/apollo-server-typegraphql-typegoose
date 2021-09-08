@@ -8,6 +8,7 @@ import session from "express-session";
 import { TimeUnit } from "./type/const";
 import { UserModel } from "./model/user.model";
 import MongoStore from "connect-mongo";
+import "./model/car.model";
 
 const envPath = path.join(__dirname, "../.env");
 dotenv.config({ path: envPath });
@@ -56,6 +57,7 @@ mongoose
     },
    })
   );
+
   const server = new ApolloServer({
    schema: await createSchema(),
    playground: {},
