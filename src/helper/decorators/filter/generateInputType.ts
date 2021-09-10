@@ -10,12 +10,12 @@ const getInputResponseData = (type: any) => {
 
 interface IGenraeteInputOption {
  name?: string;
- purpose: "create" | "update";
+ purpose?: "create" | "update";
 }
 
 export const generateInputDataType = <T>(
  type: ClassType<T>,
- { purpose, name }: IGenraeteInputOption
+ { purpose = "create", name }: IGenraeteInputOption
 ) => {
  const inputData = getInputResponseData(type);
  const typeGraphQLMetadata = getTypeGraphQLMetadataStorage();

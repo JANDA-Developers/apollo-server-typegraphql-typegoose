@@ -1,6 +1,18 @@
 import { Resolver, Ctx, Arg, Mutation, Query } from "type-graphql";
+import { generateFilterType } from "../../helper/decorators/filter/generateFilterType";
+import { generateSortType } from "../../helper/decorators/sort/generateSortType";
+import {
+ OffsetPaginatedData,
+ OffsetPagingInput,
+} from "../../helper/paging/PaginationWithOffset.type";
 import CarModel, { Car } from "../../model/car.model";
-import { Context } from "../SignIn.resolver";
+import { Context } from "../../type/context";
+
+export const UserFilterType = generateFilterType(Car); // for graphql
+export const UserSortType = generateSortType(Car);
+
+const UserOffsetPaginatedData = OffsetPaginatedData(Car); // for graphql
+type UserOffsetPaginatedData = typeof UserOffsetPaginatedData;
 
 @Resolver()
 export class CarResolver {
@@ -9,7 +21,10 @@ export class CarResolver {
   @Ctx() context: Context,
   @Arg("namesss") name: string
  ): Promise<any> {
+  if (!context.user) throw Error("");
   const newDocument = new CarModel();
+  newDocument.ownerId = context.user?._id;
+
   newDocument.name = name;
   newDocument.type = "자동차";
   newDocument.isProduction = false;
@@ -25,6 +40,7 @@ export class CarResolver {
   @Arg("name") name: string
  ): Promise<any> {
   const car = await CarModel.findById(id);
+  if (car?.isDeleted) throw Error(`Car is already deleted id:${id}`);
   if (!car) throw Error(`Car is not exsit with id ${id}`);
   car.name = name;
   return car;
@@ -34,7 +50,8 @@ export class CarResolver {
  async CarDelete(@Ctx() context: Context, @Arg("id") id: string): Promise<any> {
   const car = await CarModel.findById(id);
   if (!car) throw Error(`Car is not exsit with id ${id}`);
-  await car.remove();
+  car.isDeleted = true;
+  await car.save();
   return car;
  }
 
@@ -46,6 +63,23 @@ export class CarResolver {
   const car = await CarModel.findById(id);
   if (!car) throw Error(`Car is not exsit with id ${id}`);
   return car;
+ }
+
+ @Query(() => UserOffsetPaginatedData)
+ async CarList(
+  @Arg("pagingInput", () => OffsetPagingInput)
+  { pageIndex, pageItemCount }: OffsetPagingInput,
+  @Arg("filter", UserFilterType, { nullable: true }) filter: any,
+  @Arg("sort", UserSortType, { nullable: true }) sort: any
+ ): Promise<any> {
+  const pagingResult = new UserOffsetPaginatedData();
+  await pagingResult.setData(CarModel, {
+   pageIndex,
+   pageItemCount,
+   filter,
+   sort,
+  });
+  return pagingResult;
  }
 }
 
