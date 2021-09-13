@@ -5,7 +5,7 @@ import {
  OffsetPaginatedData,
  OffsetPagingInput,
 } from "../../helper/paging/PaginationWithOffset.type";
-import CarModel, { Car } from "../../model/car.model";
+import CarModel, { Car, CarType } from "../../model/car/car.model";
 import { Context } from "../../type/context";
 
 export const UserFilterType = generateFilterType(Car); // for graphql
@@ -23,10 +23,10 @@ export class CarResolver {
  ): Promise<any> {
   if (!context.user) throw Error("");
   const newDocument = new CarModel();
-  newDocument.ownerId = context.user?._id;
+  newDocument.onwerId = context.user?._id;
 
   newDocument.name = name;
-  newDocument.type = "자동차";
+  newDocument.type = CarType.Bus;
   newDocument.isProduction = false;
   await newDocument.save(); // database에 저장합니다.
 
@@ -62,6 +62,9 @@ export class CarResolver {
  ): Promise<any> {
   const car = await CarModel.findById(id);
   if (!car) throw Error(`Car is not exsit with id ${id}`);
+
+  car.onwerId;
+
   return car;
  }
 

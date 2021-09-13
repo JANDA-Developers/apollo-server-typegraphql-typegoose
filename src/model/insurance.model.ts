@@ -14,12 +14,14 @@ export class Insurance extends CollectionDataInterface {
  @ValueFilter(["contains", "eq"])
  name: string;
 
- @Field()
+ @Field(() => Number)
  @Prop()
  @Sorting()
  @Input()
  @ValueFilter(["contains", "eq", "gte", "lte"])
  price: number;
+
+ joinerName: string;
 
  @Field()
  @Prop()

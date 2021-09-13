@@ -8,7 +8,7 @@ import session from "express-session";
 import { TimeUnit } from "./type/const";
 import { UserModel } from "./model/user.model";
 import MongoStore from "connect-mongo";
-import "./model/car.model";
+import "./model/car/car.model";
 
 const envPath = path.join(__dirname, "../.env");
 dotenv.config({ path: envPath });
